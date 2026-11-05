@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>La Cervecería · San Rafael</title>
   <meta name="description" content="Bar de pintas tiradas, tragos y noches con música en Hipólito Yrigoyen 1650, San Rafael, Mendoza. De 19 a 5.">
   <meta name="theme-color" content="#0c0b0b">
@@ -24,7 +24,7 @@
   <nav class="bar__links" aria-label="Secciones">
     <a class="link" href="#noches">Noches</a>
     <a class="link" href="#pintas">Pintas</a>
-    <a class="link" href="#carta">Carta</a>
+    <a class="link link--tel" href="#carta">Carta</a>
     <a class="pastilla pastilla--clara" href="#reservas">Reservá</a>
   </nav>
 </header>
@@ -43,7 +43,7 @@
       </h1>
       <p class="hero__bajada" data-rise style="--i:2">Pintas tiradas, tragos y noches con música en Hipólito Yrigoyen 1650, San Rafael. De 19 a 5.</p>
 
-      <div class="hoy" data-rise style="--i:3" aria-live="polite">
+      <div class="hoy" data-rise style="--i:3">
         <p class="hoy__noche" id="hoy-noche">Jueves techno, viernes y sábado cachengue, domingo rock nacional.</p>
         <p class="hoy__estado" id="hoy-estado"><span class="punto" aria-hidden="true"></span>Abrimos de 19 a 5.</p>
       </div>
@@ -74,7 +74,7 @@
   <section class="banda" aria-labelledby="banda-titulo">
     <div class="banda__in wrap">
       <figure class="banda__video" data-reveal>
-        <video src="assets/jane-pouring-beer-fast.webm" poster="assets/jane-pouring-beer-fast-poster.jpg" width="854" height="480" muted loop playsinline autoplay preload="metadata" aria-label="Una cerveza tirándose de la canilla"></video>
+        <button type="button" id="video-pausa" aria-label="Pausar el video" aria-pressed="false"><video src="assets/jane-pouring-beer-fast.webm" poster="assets/jane-pouring-beer-fast-poster.jpg" width="854" height="480" muted loop playsinline autoplay preload="metadata" aria-hidden="true"></video></button>
       </figure>
       <div class="banda__texto" data-reveal>
         <h2 id="banda-titulo" class="head">Dos pintas y papas, $13.000</h2>
@@ -94,17 +94,17 @@
         <img data-noche="sabado" src="assets/mirrored-disco-ball-with-light-and-motor.jpg" alt="Una bola de espejos girando bajo luces" width="1920" height="1280" loading="lazy">
         <img data-noche="domingo" src="assets/live-rock-concert-featuring-musicians-playing-electric.jpg" alt="Una banda de rock tocando en vivo con guitarras eléctricas" width="1920" height="1277" loading="lazy">
       </div>
-      <p class="noches__dato" id="noches-dato">Electrónica de punta a punta, hasta el cierre.</p>
     </div>
     <div class="noches__lista">
       <h2 id="noches-titulo" class="noches__titulo">Las noches</h2>
       <ul role="tablist" aria-label="Noches de la semana">
-        <li><button role="tab" aria-selected="true" data-noche="jueves">Jueves techno</button></li>
-        <li><button role="tab" aria-selected="false" data-noche="viernes">Viernes cachengue</button></li>
-        <li><button role="tab" aria-selected="false" data-noche="sabado">Sábado cachengue</button></li>
-        <li><button role="tab" aria-selected="false" data-noche="domingo">Domingo rock nacional</button></li>
+        <li role="presentation"><button role="tab" id="tab-jueves" aria-selected="true" data-noche="jueves">Jueves techno</button></li>
+        <li role="presentation"><button role="tab" id="tab-viernes" aria-selected="false" data-noche="viernes">Viernes cachengue</button></li>
+        <li role="presentation"><button role="tab" id="tab-sabado" aria-selected="false" data-noche="sabado">Sábado cachengue</button></li>
+        <li role="presentation"><button role="tab" id="tab-domingo" aria-selected="false" data-noche="domingo">Domingo rock nacional</button></li>
       </ul>
     </div>
+    <p class="noches__dato" id="noches-dato" role="tabpanel" aria-labelledby="tab-jueves">Jueves techno, viernes y sábado cachengue, domingo rock nacional. De 19 a 5.</p>
   </section>
 
   <!-- La carta completa, de Fudo -->
@@ -118,10 +118,11 @@
       <label class="selector"><span class="sr-only">Sección de la carta</span><select id="selector"></select></label>
       <label class="buscar">
         <span class="sr-only">Buscar en la carta</span>
-        <input type="search" id="buscar" placeholder="Buscar: fernet, IPA, rabas…" autocomplete="off">
+        <input type="search" id="buscar" placeholder="Buscar: fernet, IPA, rabas…" aria-describedby="carta-estado" autocomplete="off">
       </label>
     </div>
-    <div id="carta-cuerpo" class="carta__cuerpo" aria-live="polite">
+    <p class="sr-only" id="carta-estado" aria-live="polite"></p>
+    <div id="carta-cuerpo" class="carta__cuerpo" role="tabpanel" aria-label="Productos">
       <p>La carta completa está en <a class="link-plain" href="https://menu.fu.do/keineken/qr-menu">menu.fu.do/keineken</a>.</p>
     </div>
     <p class="nota" id="carta-fuente">Precios de la carta de Fudo. Pueden cambiar sin aviso; los confirma la barra.</p>
@@ -157,11 +158,11 @@
         <p>Elegí la noche y cuántos son. Se abre WhatsApp con el mensaje armado y te confirmamos por ahí.</p>
       </div>
       <div class="cupon__der">
-        <label><span class="sr-only">Tu nombre</span><input class="campo" name="nombre" id="r-nombre" placeholder="Tu nombre" autocomplete="given-name" required></label>
-        <label><span class="sr-only">Noche</span><select class="campo" name="noche" id="r-noche"><option>Esta noche</option></select></label>
-        <label><span class="sr-only">Cuántos son</span><select class="campo" name="personas" id="r-personas"></select></label>
-        <label><span class="sr-only">Hora de llegada</span><select class="campo" name="hora" id="r-hora"></select></label>
-        <input type="hidden" name="text" id="r-texto">
+        <label><span class="sr-only">Tu nombre</span><input class="campo" id="r-nombre" placeholder="Tu nombre" autocomplete="given-name" required></label>
+        <label><span class="sr-only">Noche</span><select class="campo" id="r-noche"><option>Esta noche</option></select></label>
+        <label><span class="sr-only">Cuántos son</span><select class="campo" id="r-personas"><option value="2">2 personas</option><option value="4">4 personas</option><option value="6">6 personas</option></select></label>
+        <label><span class="sr-only">Hora de llegada</span><select class="campo" id="r-hora"><option value="22:00">Llegamos 22:00</option><option value="23:00">Llegamos 23:00</option></select></label>
+        <input type="hidden" name="text" id="r-texto" value="¡Hola! Quiero reservar una mesa.">
         <button class="cupon__enviar" type="submit">Mandar por WhatsApp</button>
       </div>
     </form>
@@ -182,8 +183,8 @@
 
 <footer class="pie">
   <div class="wrap">
-    <p class="pie__marca" aria-label="La Cervecería">
-      <span class="pie__logo"><img src="assets/logo-marilyn.png" alt="" width="150" height="150"></span><span>C</span><span>E</span><span>R</span><span>V</span><span>E</span><span>C</span><span>E</span><span>R</span><span>Í</span><span>A</span>
+    <p class="pie__marca"><span class="sr-only">La Cervecería</span>
+      <span class="pie__logo" aria-hidden="true"><img src="assets/logo-marilyn.png" alt="" width="150" height="150"></span><span aria-hidden="true">C</span><span aria-hidden="true">E</span><span aria-hidden="true">R</span><span aria-hidden="true">V</span><span aria-hidden="true">E</span><span aria-hidden="true">C</span><span aria-hidden="true">E</span><span aria-hidden="true">R</span><span aria-hidden="true">Í</span><span aria-hidden="true">A</span>
     </p>
     <div class="pie__grilla">
       <nav class="pie__links" aria-label="Pie">

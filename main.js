@@ -4,7 +4,7 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const plata = (n) => '$' + Math.round(n).toLocaleString('es-AR');
+  const plata = (n) => (n > 0 ? '$' + Math.round(n).toLocaleString('es-AR') : 'Consultar');
   const sinTildes = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const CARTA = window.CARTA;
 
@@ -37,14 +37,15 @@
     else if (ev) noche.textContent = `Hoy es ${DIAS[t.noche]}: noche de ${ev.genero}.`;
     else {
       const p = proxima(t.noche);
-      noche.textContent = `Hoy no hay fiesta. La próxima es el ${DIAS[p.d]}: ${NOCHES[p.d].genero}.`;
+      noche.textContent = `Hoy es ${DIAS[t.noche]}: bar abierto, sin fiesta. La próxima es el ${DIAS[p.d]}: ${NOCHES[p.d].genero}.`;
     }
     let txt;
     if (t.abierto) txt = `Abierto ahora, hasta las ${CIERRA}.`;
     else {
       const faltan = (ABRE * 60) - (t.h * 60 + t.m);
       const hs = Math.floor(faltan / 60), min = faltan % 60;
-      txt = `Abre hoy a las ${ABRE}, en ${hs ? hs + ' h ' : ''}${min} min.`;
+      const partes = [hs && `${hs} h`, min && `${min} min`].filter(Boolean).join(' ');
+      txt = `Abre hoy a las ${ABRE}, en ${partes}.`;
     }
     estado.innerHTML = '<span class="punto" aria-hidden="true"></span>' + txt;
     estado.classList.toggle('is-abierto', t.abierto);
@@ -67,6 +68,7 @@
     fotosNoche.forEach((img) => img.classList.toggle('is-on', img.dataset.noche === id));
     const nombre = DIAS[+diaNum][0].toUpperCase() + DIAS[+diaNum].slice(1);
     datoNoche.innerHTML = `<b>${nombre}, ${ev.genero}</b>${ev.dato} De ${ABRE} a ${CIERRA}.`;
+    datoNoche.setAttribute('aria-labelledby', 'tab-' + id);
     seccionNoches.classList.add('is-cambio');
     setTimeout(() => seccionNoches.classList.remove('is-cambio'), 260);
     if (foco) tabsNoche.find((b) => b.dataset.noche === id).focus();
@@ -75,10 +77,11 @@
     b.setAttribute('aria-controls', 'noches-dato');
     b.addEventListener('click', () => elegirNoche(b.dataset.noche));
     b.addEventListener('keydown', (e) => {
-      const paso = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      if (!paso) return;
+      const n = tabsNoche.length;
+      const destino = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key];
+      if (destino === undefined) return;
       e.preventDefault();
-      elegirNoche(tabsNoche[(i + paso + tabsNoche.length) % tabsNoche.length].dataset.noche, true);
+      elegirNoche(tabsNoche[(destino + n) % n].dataset.noche, true);
     });
   });
   const deHoy = NOCHES[hoy.noche] ? hoy.noche : proxima(hoy.noche).d;
@@ -135,6 +138,9 @@
     document.body.insertAdjacentHTML('afterbegin', ILUS.sprite);
     for (const g of CARTA.grupos) for (const s of g.secciones) for (const i of s.items) i.ilu = ILUS.de(i.n, g.id, s.nombre);
   }
+  // los nombres de la carga de Fudo: mayúscula inicial, espacio antes del paréntesis, tildes que faltan
+  const prolijo = (n) => n.replace(/(\S)\(/g, '$1 (').replace(/\bporcion\b/gi, (w) => (w[0] === 'P' ? 'Porción' : 'porción')).replace(/^\p{Ll}/u, (l) => l.toUpperCase());
+  if (CARTA) for (const g of CARTA.grupos) for (const s of g.secciones) for (const i of s.items) i.n = prolijo(i.n);
   const ilustracion = (i) => i.ilu
     ? `<span class="item__foto item__foto--ilu"${i.ilu[1] ? ` style="--liq:${i.ilu[1]}"` : ''} aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#il-${i.ilu[0]}"/></svg></span>`
     : '<span class="item__foto item__foto--sin" aria-hidden="true"></span>';
@@ -142,16 +148,33 @@
       ${ilustracion(i)}
       <div><p class="item__fila"><b>${esc(i.n)}</b><span>${plata(i.p)}</span></p>${i.d ? `<p class="item__desc">${esc(i.d)}</p>` : ''}</div></li>`;
   const seccionHTML = (s, titulo) => `<section class="carta__seccion" aria-label="${esc(titulo || s.nombre)}">
-      <div class="cabecera"><h3>${esc(titulo || s.nombre)}</h3><p class="cabecera__cuenta">${s.items.length}</p></div>
+      <div class="cabecera"><h3>${esc(titulo || s.nombre)}</h3></div>
       <ul class="menu">${s.items.map(itemHTML).join('')}</ul></section>`;
 
-  function mostrarGrupo(id, foco) {
+  const estado = $('#carta-estado');
+  const cuenta = (g) => g.secciones.reduce((n, s) => n + s.items.length, 0);
+  let totalCarta = 0;
+  function entrar() {
+    if (quieto) return;
+    delete cuerpo.dataset.entra;
+    void cuerpo.offsetWidth;
+    cuerpo.dataset.entra = '';
+  }
+  function mostrarGrupo(id, { foco = false, animar = false, llevar = false } = {}) {
     grupoActual = id;
     const g = CARTA.grupos.find((x) => x.id === id);
     $$('button', pestanas).forEach((b) => { const on = b.dataset.grupo === id; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
     selector.value = id;
+    const opcionRes = selector.querySelector('option[value=""]');
+    if (opcionRes) opcionRes.remove();
+    cuerpo.classList.remove('is-busqueda');
+    cuerpo.setAttribute('aria-labelledby', 'pestana-' + id);
     cuerpo.innerHTML = g.secciones.map((s) => seccionHTML(s, g.secciones.length === 1 ? g.nombre : null)).join('');
+    $('#carta-cuenta').textContent = `${totalCarta} productos`;
+    if (animar) entrar();
     if (foco) $(`button[data-grupo="${id}"]`, pestanas).focus();
+    if (llevar && cuerpo.getBoundingClientRect().top < 0) cuerpo.scrollIntoView({ block: 'start' });
+    estado.textContent = animar || foco ? `${g.nombre}, ${cuenta(g)} productos` : '';
   }
   function mostrarBusqueda(q) {
     const t = sinTildes(q);
@@ -161,75 +184,97 @@
       if (items.length) res.push({ nombre: s.nombre, items });
     }
     $$('button', pestanas).forEach((b) => b.setAttribute('aria-selected', 'false'));
+    if (!selector.querySelector('option[value=""]')) selector.insertAdjacentHTML('afterbegin', '<option value="">Resultados</option>');
+    selector.value = '';
+    cuerpo.classList.add('is-busqueda');
+    cuerpo.removeAttribute('aria-labelledby');
+    const n = res.reduce((m, s) => m + s.items.length, 0);
     cuerpo.innerHTML = res.length ? res.map((s) => seccionHTML(s)).join('')
-      : `<p class="carta__vacio">No hay nada con «${esc(q)}» en la carta. Probá con otra palabra o preguntá en la barra.</p>`;
+      : `<p class="carta__vacio">No hay nada con «${esc(q)}» en la carta. Probá con otra palabra o preguntá en la barra.<br><button type="button" class="pastilla pastilla--clara" data-limpiar>Ver toda la carta</button></p>`;
+    $('#carta-cuenta').textContent = n === 1 ? '1 resultado' : `${n} resultados`;
+    clearTimeout(anuncio);
+    anuncio = setTimeout(() => { estado.textContent = n ? `${n} resultados para «${q}»` : `Sin resultados para «${q}»`; }, 300);
   }
+  let anuncio;
 
   if (CARTA) {
     const grupos = ORDEN.map((id) => CARTA.grupos.find((g) => g.id === id)).filter(Boolean);
-    pestanas.innerHTML = grupos.map((g) => `<button role="tab" type="button" data-grupo="${g.id}" aria-controls="carta-cuerpo">${esc(g.nombre)}</button>`).join('');
+    pestanas.innerHTML = grupos.map((g) => `<button role="tab" type="button" id="pestana-${g.id}" data-grupo="${g.id}" aria-controls="carta-cuerpo">${esc(g.nombre)}</button>`).join('');
     selector.innerHTML = grupos.map((g) => `<option value="${g.id}">${esc(g.nombre)}</option>`).join('');
-    selector.addEventListener('change', () => { buscar.value = ''; mostrarGrupo(selector.value); });
-    const total = CARTA.grupos.reduce((n, g) => n + g.secciones.reduce((m, s) => m + s.items.length, 0), 0);
-    $('#carta-cuenta').textContent = `${total} productos`;
+    selector.addEventListener('change', () => { if (!selector.value) return; buscar.value = ''; mostrarGrupo(selector.value, { animar: true, llevar: true }); });
+    totalCarta = CARTA.grupos.reduce((n, g) => n + cuenta(g), 0);
     $('#carta-fuente').innerHTML = `Precios de la <a class="link-plain" href="${CARTA.fuente}">carta de Fudo</a> al ${CARTA.fecha}. Pueden cambiar; los confirma la barra.`;
     const botones = $$('button', pestanas);
     botones.forEach((b, i) => {
-      b.addEventListener('click', () => { buscar.value = ''; mostrarGrupo(b.dataset.grupo); });
+      b.addEventListener('click', () => { buscar.value = ''; mostrarGrupo(b.dataset.grupo, { animar: true }); });
       b.addEventListener('keydown', (e) => {
-        const paso = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-        if (!paso) return;
+        const n = botones.length;
+        const destino = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: n - 1 }[e.key];
+        if (destino === undefined) return;
         e.preventDefault();
         buscar.value = '';
-        mostrarGrupo(botones[(i + paso + botones.length) % botones.length].dataset.grupo, true);
+        mostrarGrupo(botones[(destino + n) % n].dataset.grupo, { foco: true });
       });
     });
     buscar.addEventListener('input', () => { const q = buscar.value.trim(); q.length >= 2 ? mostrarBusqueda(q) : mostrarGrupo(grupoActual); });
     $$('[data-pestana]').forEach((a) => a.addEventListener('click', () => { buscar.value = ''; mostrarGrupo(a.dataset.pestana); }));
+    cuerpo.addEventListener('click', (e) => { if (!e.target.closest('[data-limpiar]')) return; buscar.value = ''; mostrarGrupo(grupoActual, { animar: true }); buscar.focus(); });
     mostrarGrupo(grupoActual);
   }
 
   // ---------- Marilyn: un marco, la foto cambia ----------
   const fotos = $$('.rubias__foto img'), pie = $('#rubias-pie');
   let actual = 0, reloj;
+  const derivar = (img) => { if (!quieto && img.animate) img.animate([{ transform: 'scale(1.05)' }, { transform: 'none' }], { duration: 3800, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }); };
   function siguiente() {
     fotos[actual].classList.remove('is-on');
     actual = (actual + 1) % fotos.length;
     fotos[actual].classList.add('is-on');
+    derivar(fotos[actual]);
     pie.textContent = fotos[actual].dataset.pie;
   }
-  const arrancar = () => { if (!quieto && !reloj) reloj = setInterval(siguiente, 3200); };
+  // gira solo cuando está a la vista y nadie la está mirando de cerca (WCAG 2.2.2)
+  const marco = $('.rubias__foto');
+  let aLaVista = false, encima = false;
+  const arrancar = () => { if (!quieto && !reloj && aLaVista && !encima && !document.hidden) reloj = setInterval(siguiente, 3200); };
   const parar = () => { clearInterval(reloj); reloj = null; };
-  $('.rubias__foto').addEventListener('click', () => { siguiente(); parar(); arrancar(); });
+  marco.addEventListener('click', () => { siguiente(); parar(); arrancar(); });
+  for (const [ev, v] of [['pointerenter', true], ['pointerleave', false], ['focusin', true], ['focusout', false]]) marco.addEventListener(ev, () => { encima = v; v ? parar() : arrancar(); });
   document.addEventListener('visibilitychange', () => (document.hidden ? parar() : arrancar()));
-  arrancar();
+  if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { aLaVista = en.isIntersecting; aLaVista ? arrancar() : parar(); }).observe(marco);
+  else { aLaVista = true; arrancar(); }
 
   // ---------- el video de la banda ----------
-  const video = $('.banda__video video');
+  const video = $('.banda__video video'), botonVideo = $('#video-pausa');
+  let pausadoAMano = quieto;
   if (quieto) { video.removeAttribute('autoplay'); video.pause(); }
+  const marcar = () => { botonVideo.setAttribute('aria-pressed', String(video.paused)); botonVideo.setAttribute('aria-label', video.paused ? 'Reproducir el video' : 'Pausar el video'); };
+  botonVideo.addEventListener('click', () => { if (video.paused) { pausadoAMano = false; video.play().catch(() => {}); } else { pausadoAMano = true; video.pause(); } marcar(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { if (!en.isIntersecting) video.pause(); else if (!pausadoAMano) video.play().catch(() => {}); marcar(); }).observe(video);
+  marcar();
 
   // ---------- reservas: el cupón arma el mensaje de WhatsApp ----------
   const selNoche = $('#r-noche'), selPers = $('#r-personas'), selHora = $('#r-hora');
   const opciones = [];
-  for (let i = 0; i < 8; i++) {
+  const desde = hoy.h < CIERRA ? 1 : 0;
+  for (let i = desde; i < desde + 8; i++) {
     const d = (hoy.noche + i) % 7;
-    const fecha = new Date(Date.now() + (i - (hoy.h < CIERRA ? 1 : 0)) * 864e5);
+    const fecha = new Date(Date.now() + (i - desde) * 864e5);
     const dm = fecha.toLocaleDateString('es-AR', { day: 'numeric', month: 'numeric', timeZone: 'America/Argentina/Mendoza' });
     const ev = NOCHES[d] ? ` · ${NOCHES[d].genero}` : '';
-    opciones.push(`${i === 0 ? 'Hoy, ' : ''}${DIAS[d]} ${dm}${ev}`);
+    opciones.push(`${i === desde ? 'Hoy, ' : ''}${DIAS[d]} ${dm}${ev}`);
   }
   selNoche.innerHTML = opciones.map((o) => `<option>${o}</option>`).join('');
   selPers.innerHTML = [2, 3, 4, 5, 6, 7, 8, 10, 12].map((n) => `<option value="${n}">${n} personas</option>`).join('') + '<option value="más de 12">Más de 12</option>';
   selHora.innerHTML = ['20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '00:00', '00:30', '01:00'].map((h) => `<option value="${h}">Llegamos ${h}</option>`).join('');
   selHora.value = '22:00';
-  $('#cupon').addEventListener('submit', (e) => {
-    e.preventDefault();
+  $('#cupon').addEventListener('submit', () => {
     const nombre = $('#r-nombre').value.trim();
     const noche = selNoche.value.replace(/ · .*$/, '');
     const cuando = noche.startsWith('Hoy, ') ? 'hoy ' + noche.slice(5) : 'el ' + noche;
     const personas = /^\d+$/.test(selPers.value) ? `${selPers.value} personas` : selPers.value + ' personas';
     const texto = `¡Hola! Soy ${nombre}. Quiero reservar una mesa para ${personas} ${cuando}, llegando a las ${selHora.value}. ¿Hay lugar?`;
-    window.open(`https://wa.me/542604550271?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+    $('#r-texto').value = texto; // el formulario sigue su envío normal a wa.me con este texto
   });
 
   // ---------- entradas: cada sección sube por partes al entrar ----------

@@ -19,7 +19,7 @@
   --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
   --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
   --step-sub: clamp(1.75rem, 1rem + 2.4vw, 3.125rem);
-  --step-display: clamp(3rem, 11.5vw, 6.25rem);
+  --step-display: clamp(3rem, 8.4vw, 6.25rem); /* "Cervecería" mide ~5,2em y la columna es de 46vw */
 
   --margin: clamp(1rem, 2.2vw, 2rem);
   --gutter: clamp(1rem, 2vw, 2rem);
@@ -43,6 +43,7 @@ h1, h2, h3, p, figure, ul, dl, dd { margin: 0; }
 ul { padding: 0; list-style: none; }
 img, video { display: block; max-width: 100%; }
 button, input, select { font: inherit; color: inherit; }
+a, button, select, input { -webkit-tap-highlight-color: transparent; }
 button { background: none; border: 0; padding: 0; cursor: pointer; }
 a { color: inherit; }
 :target { scroll-margin-top: 5rem; }
@@ -105,7 +106,7 @@ p { max-width: 62ch; text-wrap: pretty; }
 .item__foto--sin { display: grid; place-items: start center; padding-top: 0.6rem; height: auto; background: none; }
 .item__foto--sin::after { content: ""; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--accent); }
 /* los dibujos de la carta: el círculo del logo con el producto adentro; el líquido toma su color (--liq) */
-.item__foto--ilu { --ilu: #efe5cf; --liq: #c46f1c; display: grid; place-items: center; overflow: hidden; box-shadow: inset 0 0 0 1px rgb(239 229 207 / 0.08); }
+.item__foto--ilu { --ilu: #efe5cf; --liq: #c46f1c; display: grid; place-items: center; overflow: hidden; }
 .item__foto--ilu svg { width: 100%; height: 100%; transition: transform var(--t-hover) var(--ease-out); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .item:hover .item__foto--ilu svg { transform: rotate(-8deg) scale(1.06); }
@@ -113,7 +114,7 @@ p { max-width: 62ch; text-wrap: pretty; }
 /* la pinta vista desde arriba: el color de la cerveza y el borde de espuma */
 .item__foto--color { background: var(--c); border: 0.375rem solid #efe5cf; }
 .item__fila { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; max-width: none; padding-top: 0.25rem; }
-.item__fila b { font-weight: 500; line-height: 1.3; }
+.item__fila b { font-weight: 500; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
 .item__fila span { flex: none; font-weight: 500; }
 .item__desc { margin-top: 0.3rem; color: var(--muted); font-size: 1rem; line-height: 1.45; max-width: 40ch; }
 .item__nota { margin-top: 0.3rem; color: var(--accent-soft); font-size: 1rem; }
@@ -123,6 +124,7 @@ p { max-width: 62ch; text-wrap: pretty; }
 .banda { background: var(--accent); color: var(--accent-ink); padding-block: clamp(4rem, 8vw, 7rem); margin-block: calc(var(--section) / 2); }
 .banda__in { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center; }
 .banda__video { grid-column: 1 / span 5; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--accent); isolation: isolate; }
+.banda__video button { display: block; width: 100%; height: 100%; border-radius: 50%; cursor: pointer; }
 .banda__video video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.6); mix-blend-mode: multiply; background: none; }
 .banda__texto { grid-column: 7 / span 6; }
 .banda__texto p { margin-top: 1.5rem; font-size: var(--step-lead); line-height: 1.35; max-width: 32ch; }
@@ -137,11 +139,12 @@ p { max-width: 62ch; text-wrap: pretty; }
 .noches__foto { width: 50vh; height: 50vh; left: calc(58% - 25vh); top: calc(50% - 40vh); overflow: hidden; background: var(--bg); }
 .noches__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: var(--estarcido); opacity: 0; transition: opacity 300ms ease; }
 .noches__foto img.is-on { opacity: 1; }
-.noches__dato { position: absolute; left: calc(58% + 32vh + 1.5rem); top: calc(50% + 14vh); width: min(16rem, calc(42% - 32vh - 1.5rem - var(--margin))); }
+.noches__dato { position: absolute; z-index: 1; left: calc(58% + 32vh + 1.5rem); top: calc(50% + 14vh); width: min(16rem, calc(42% - 32vh - 1.5rem - var(--margin))); }
 .noches__dato b { display: block; font-weight: 600; color: var(--accent-soft); }
 .noches__lista { position: relative; z-index: 1; font-size: var(--step-sub); line-height: 1.15; font-weight: 600; letter-spacing: -0.025em; }
-.noches__titulo { font-size: inherit; color: var(--muted); line-height: inherit; letter-spacing: inherit; }
-.noches__lista button { color: var(--muted); display: inline-flex; align-items: center; gap: 0.35em; text-align: left; transition: color var(--t-hover) ease; }
+.noches__titulo { font-size: var(--step-head); color: var(--ink); line-height: 1; margin-bottom: 0.4em; }
+.noches__lista button { color: var(--muted); display: inline-flex; align-items: center; gap: 0.35em; text-align: left; transition: color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.noches__lista button:active { transform: scale(0.97); }
 .noches__lista button::before { content: ""; width: 0.32em; height: 0.32em; border-radius: 50%; background: var(--accent); opacity: 0; transform: scale(0.96); transition: opacity 200ms ease, transform 240ms var(--ease-out); }
 .noches__lista button[aria-selected="true"] { color: var(--ink); }
 .noches__lista button[aria-selected="true"]::before { opacity: 1; transform: none; }
@@ -158,12 +161,19 @@ p { max-width: 62ch; text-wrap: pretty; }
 .selector { display: none; }
 .selector select { width: 100%; min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 500; font-size: 1rem; appearance: none; cursor: pointer; }
 .selector select option { color: #111; background: #fff; }
+.selector select, select.campo { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
 .buscar input { width: min(22rem, 100%); min-height: 2.75rem; padding: 0 1.25rem; border: 0; border-radius: 999px; background: var(--surface); font-size: max(1rem, var(--step-body)); }
 .buscar input::placeholder { color: var(--muted); }
 .carta__seccion + .carta__seccion { margin-top: 6rem; }
 .carta__seccion .cabecera { margin-bottom: 2.5rem; }
 .carta__seccion h3 { font-size: var(--step-sub); }
 .carta__vacio { font-size: var(--step-lead); }
+.carta__vacio .pastilla { margin-top: 1.5rem; font-size: var(--step-body); }
+.carta__cuerpo { scroll-margin-top: 1rem; }
+.carta__seccion .menu:has(> :only-child) { grid-template-columns: minmax(0, 1fr); max-width: calc(50% - 2rem); }
+.is-busqueda .carta__seccion + .carta__seccion { margin-top: 3rem; }
+.is-busqueda .carta__seccion h3 { font-size: var(--step-lead); }
+.is-busqueda .carta__seccion .cabecera { margin-bottom: 1.5rem; }
 
 /* ---------- las prefieren rubias ---------- */
 .rubias { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center; padding-block: calc(var(--section) / 2); }
@@ -173,23 +183,24 @@ p { max-width: 62ch; text-wrap: pretty; }
 .precios li { display: flex; justify-content: space-between; gap: 1rem; font-size: var(--step-lead); }
 .precios b { font-weight: 500; }
 .rubias__marco { grid-column: 8 / span 5; }
-.rubias__foto { position: relative; display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--surface); cursor: pointer; }
+.rubias__foto { position: relative; display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--surface); cursor: pointer; transition: transform var(--t-press) var(--ease-out); }
+.rubias__foto:active { transform: scale(0.985); }
 .rubias__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: var(--estarcido); opacity: 0; transition: opacity 600ms ease; }
 .rubias__foto img.is-on { opacity: 1; }
 .rubias__marco figcaption { margin-top: 1rem; text-align: center; color: var(--muted); }
 
 /* ---------- reservas: el cupón ---------- */
 .reservas { padding-block: calc(var(--section) / 2); }
-.cupon { position: relative; display: grid; grid-template-columns: 46fr 54fr; background: var(--accent); color: var(--accent-ink); min-height: 22rem; margin-inline: auto; max-width: 72rem; }
+.cupon { position: relative; display: grid; grid-template-columns: 46fr 54fr; background: var(--accent); color: var(--accent-ink); min-height: 22rem; }
 /* las muescas: dos medios círculos del color del fondo, sobre la línea de corte */
 .cupon::before, .cupon::after { content: ""; position: absolute; left: 46%; width: 2rem; height: 2rem; margin-left: -1rem; border-radius: 50%; background: var(--bg); }
 .cupon::before { top: -1rem; }
 .cupon::after { bottom: -1rem; }
-.cupon__izq { padding: 3rem; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; border-right: 0.3125rem dotted var(--bg); }
+.cupon__izq { position: relative; padding: 3rem; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; border-right: 0.3125rem dotted var(--bg); }
 .cupon__izq h2 { font-size: var(--step-sub); max-width: 10ch; }
 .cupon__izq p { max-width: 30ch; }
 .cupon__der { padding: 3rem; display: grid; gap: 0.625rem; align-content: center; }
-.campo { width: 100%; min-height: 3.25rem; padding: 0 1rem; border: 0; border-radius: 0; background: var(--accent-deep); color: var(--accent-ink); font-size: max(1rem, var(--step-body)); appearance: none; }
+.campo { width: 100%; min-height: 3.25rem; padding: 0 1rem; border: 0; border-radius: 0; background: var(--accent-deep); color: var(--accent-ink); font-size: max(1rem, var(--step-body)); appearance: none; border-bottom: 2px solid var(--accent-ink); }
 select.campo { cursor: pointer; }
 .campo::placeholder { color: #ffd9de; opacity: 1; }
 .campo:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 0; }
@@ -199,11 +210,12 @@ select.campo { cursor: pointer; }
 .cupon__enviar:focus-visible { outline-color: var(--accent-ink); }
 @media (hover: hover) and (pointer: fine) { .cupon__enviar:hover { background: #2a2725; } }
 
-.donde { margin: 6rem auto 0; max-width: 72rem; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: 2rem; align-items: start; }
+.donde { margin: 6rem 0 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: 2rem; align-items: start; }
 .donde__titulo { grid-column: 1 / span 5; font-size: var(--step-sub); }
 .donde__datos { grid-column: 7 / span 6; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 2rem; }
 .donde__datos dt { color: var(--muted); font-size: 1rem; }
 .donde__datos dd { margin-top: 0.2rem; overflow-wrap: anywhere; }
+.donde__datos dd a { display: inline-block; padding-block: 0.2rem; }
 .donde .pastilla { grid-column: 7 / span 6; justify-self: start; }
 
 /* ---------- pie: la marca armada en círculos ---------- */
@@ -219,35 +231,33 @@ select.campo { cursor: pointer; }
 .pie__creditos { margin-top: 3rem; font-size: 1rem; max-width: 62ch; }
 .pie__ultima { margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .pie .pastilla { background: var(--bg); color: var(--ink); }
-@media (hover: hover) and (pointer: fine) { .pie .pastilla:hover { background: var(--ink); color: var(--bg); } }
+@media (hover: hover) and (pointer: fine) { .pie .pastilla:hover { background: var(--ink); color: var(--bg); } .pie .link-plain:hover { text-decoration-color: var(--bg); } }
 
 /* ---------- movimiento (el contenido queda visible sin script) ---------- */
 .lines .line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .lines [data-line] { display: block; }
 .shutter { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) {
-  .js [data-rise] { opacity: 0; transform: translateY(18px); animation: rise 800ms var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 90ms + 500ms); }
+  .js [data-rise] { opacity: 0; transform: translateY(18px); animation: rise 600ms var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 70ms + 250ms); }
   .js .lines [data-line] { transform: translateY(105%); animation: line 900ms var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 110ms + 350ms); }
   .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 450ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
   .js [data-reveal].is-in { opacity: 1; transform: none; }
   /* la jugada fuerte: el foco se abre de abajo hacia arriba y Marilyn se acomoda */
-  .hero__foco { animation: obturador 750ms var(--ease-in-out) both; }
+  .hero__foco { animation: obturador 700ms var(--ease-out) both; }
   .hero__foco img { animation: asentar 1400ms var(--ease-soft) both; }
   /* las pintas se llenan: el círculo crece desde el centro cuando entra la lista */
-  .js .menu--pintas .item__foto--color { transform: scale(0.4); transition: transform 700ms var(--ease-out); transition-delay: calc(var(--i, 0) * 60ms); }
+  .js .menu--pintas .item__foto--color { transform: scale(0.4); transition: transform 600ms var(--ease-out); transition-delay: calc(min(var(--i, 0), 8) * 40ms); }
   .js .menu--pintas.is-in .item__foto--color { transform: none; }
-  .js .menu--pintas .item { opacity: 0; transition: opacity 600ms var(--ease-out); transition-delay: calc(var(--i, 0) * 60ms); }
+  .js .menu--pintas .item { opacity: 0; transition: opacity 400ms var(--ease-out); transition-delay: calc(min(var(--i, 0), 8) * 40ms); }
   .js .menu--pintas.is-in .item { opacity: 1; }
-  .js .carta__cuerpo .item { animation: rise 500ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 12) * 35ms); }
+  .js .carta__cuerpo[data-entra] .item { animation: rise 300ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * 30ms); }
   .noches__disco { transition: transform 500ms var(--ease-out); }
   .noches.is-cambio .noches__disco { transform: scale(0.94); }
-  .rubias__foto img.is-on { animation: deriva 7s var(--ease-soft) both; }
 }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes line { to { transform: none; } }
 @keyframes obturador { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0); } }
 @keyframes asentar { from { transform: scale(1.12); } }
-@keyframes deriva { from { transform: scale(1.06); } to { transform: none; } }
 
 /* ---------- tablet ---------- */
 @media (max-width: 64em) {
@@ -257,6 +267,7 @@ select.campo { cursor: pointer; }
 /* ---------- teléfono: su propia composición ---------- */
 @media (max-width: 47.99em) {
   .bar__links .link { display: none; }
+  .bar__links .link--tel { display: inline; }
   .marca { font-size: 1.125rem; }
 
   .hero { align-items: flex-start; min-height: auto; }
@@ -280,33 +291,37 @@ select.campo { cursor: pointer; }
   .banda__texto { grid-column: 1; }
 
   .noches { min-height: 0; display: block; align-items: stretch; }
-  .noches__escenario { position: relative; inset: auto; height: calc(96vw + 4.5rem); }
+  .noches__escenario { position: relative; inset: auto; height: 96vw; }
   .noches__disco { width: 86vw; height: 86vw; left: calc(50% - 43vw); top: 10vw; }
   .noches__foto { width: 68vw; height: 68vw; left: calc(50% - 34vw); top: 0; }
-  .noches__dato { left: 0; right: 0; top: auto; bottom: 0; width: auto; }
+  .noches__dato { position: static; width: auto; margin-top: 1.5rem; order: 3; }
   .noches__lista { font-size: 1.625rem; margin-top: 1.5rem; }
-  .noches__lista ul { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; margin-top: 0.5rem; }
-  .noches__lista button { font-size: 1.25rem; }
-  .noches__lista button .hoy-marca { display: none; }
+  .noches__lista ul { display: grid; grid-template-columns: 1fr; gap: 0.25rem; margin-top: 0.5rem; }
+  .noches__lista button { font-size: 1.375rem; min-height: 2.75rem; }
   .noches { display: flex; flex-direction: column; }
   .noches__escenario { order: 1; }
   .noches__lista { order: 2; }
 
-  .carta__controles { position: sticky; top: 0; z-index: 4; background: var(--bg); margin-inline: calc(var(--margin) * -1); padding: 0.75rem var(--margin); margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .carta__controles { position: sticky; top: 0; z-index: 4; background: var(--bg); margin-inline: calc(var(--margin) * -1); padding: 0.75rem var(--margin); margin-bottom: 2rem; display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
   .pestanas { display: none; }
   .selector { display: block; }
   .buscar, .buscar input { width: 100%; }
   .carta__seccion + .carta__seccion { margin-top: 4rem; }
   .carta__seccion h3 { font-size: 8.5vw; }
+  .carta__seccion .menu:has(> :only-child) { max-width: none; }
+  .carta__cuerpo { scroll-margin-top: 8rem; }
 
   .rubias { grid-template-columns: 1fr; row-gap: 3rem; }
   .rubias__texto, .rubias__marco { grid-column: 1; }
   .rubias__marco { width: 78vw; justify-self: center; }
 
-  .cupon { grid-template-columns: 1fr; margin-inline: calc(var(--margin) * -1 + 12px); }
-  .cupon::before, .cupon::after { left: auto; top: auto; margin: 0; }
-  .cupon::before { left: -1rem; top: calc(var(--corte) - 1rem); }
-  .cupon::after { right: -1rem; top: calc(var(--corte) - 1rem); bottom: auto; }
+  .reservas { overflow-x: clip; }
+  .cupon { grid-template-columns: 1fr; }
+  .cupon::before, .cupon::after { display: none; }
+  /* las muescas van atadas a la línea de corte, aunque el texto ocupe más renglones */
+  .cupon__izq::before, .cupon__izq::after { content: ""; position: absolute; bottom: -1.15rem; width: 2rem; height: 2rem; border-radius: 50%; background: var(--bg); }
+  .cupon__izq::before { left: -1rem; }
+  .cupon__izq::after { right: -1rem; }
   .cupon__izq { padding: 2rem 1.5rem; border-right: 0; border-bottom: 0.3125rem dotted var(--bg); }
   .cupon__der { padding: 2rem 1.5rem; }
   .campo { min-height: 3.375rem; }
@@ -319,4 +334,3 @@ select.campo { cursor: pointer; }
   .pie__links { grid-column: 1 / -1; columns: 2; }
   .pie__contacto { grid-column: 1 / -1; }
 }
-@media (max-width: 47.99em) { .cupon { --corte: 13.5rem; } .cupon__izq { min-height: 13.5rem; } }
