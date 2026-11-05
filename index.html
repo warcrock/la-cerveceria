@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>La Cervecería · San Rafael</title>
+  <meta name="description" content="Bar de pintas tiradas, tragos y noches con música en Hipólito Yrigoyen 1650, San Rafael, Mendoza. De 19 a 5.">
+  <meta name="theme-color" content="#0c0b0b">
+  <link rel="icon" href="assets/logo-marilyn.png">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=chillax@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<header class="bar wrap">
+  <a class="marca" href="#inicio" aria-label="La Cervecería, inicio">
+    <img src="assets/logo-marilyn.png" alt="" width="40" height="40">
+    <span>La Cervecería</span>
+  </a>
+  <nav class="bar__links" aria-label="Secciones">
+    <a class="link" href="#noches">Noches</a>
+    <a class="link" href="#pintas">Pintas</a>
+    <a class="link" href="#carta">Carta</a>
+    <a class="pastilla pastilla--clara" href="#reservas">Reservá</a>
+  </nav>
+</header>
+
+<main id="inicio">
+
+  <!-- Hero: el foco. El círculo del logo, gigante, con Marilyn en estarcido -->
+  <section class="hero" aria-labelledby="titulo">
+    <div class="hero__foco" aria-hidden="true">
+      <img src="assets/monroe-1953-publicity.jpg" alt="" width="1920" height="2355" fetchpriority="high">
+    </div>
+    <div class="hero__texto wrap">
+      <h1 id="titulo" class="display lines">
+        <span class="line"><span data-line style="--i:0">La</span></span>
+        <span class="line"><span data-line style="--i:1">Cervecería</span></span>
+      </h1>
+      <p class="hero__bajada" data-rise style="--i:2">Pintas tiradas, tragos y noches con música en Hipólito Yrigoyen 1650, San Rafael. De 19 a 5.</p>
+
+      <div class="hoy" data-rise style="--i:3" aria-live="polite">
+        <p class="hoy__noche" id="hoy-noche">Jueves techno, viernes y sábado cachengue, domingo rock nacional.</p>
+        <p class="hoy__estado" id="hoy-estado"><span class="punto" aria-hidden="true"></span>Abrimos de 19 a 5.</p>
+      </div>
+
+      <div class="hero__acciones" data-rise style="--i:4">
+        <a class="boton-foco" href="#reservas">Reservá tu mesa</a>
+        <a class="link link-plain" href="#carta">Ver la carta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pintas: cada pinta vista desde arriba es un círculo de su color -->
+  <section class="pintas wrap" id="pintas" aria-labelledby="pintas-titulo">
+    <div class="cabecera" data-reveal>
+      <h2 id="pintas-titulo" class="head">Pintas tiradas</h2>
+      <p class="cabecera__cuenta" id="pintas-cuenta">13 canillas en la carta</p>
+    </div>
+    <ul class="menu menu--pintas" id="lista-pintas">
+      <!-- main.js arma la lista desde data.js; sin script queda este resumen -->
+      <li class="item"><span class="item__foto item__foto--color" style="--c:#e9a92a" aria-hidden="true"></span><div><p class="item__fila"><b>Pinta Golden</b><span>$4.500</span></p></div></li>
+      <li class="item"><span class="item__foto item__foto--color" style="--c:#9b2f17" aria-hidden="true"></span><div><p class="item__fila"><b>Pinta Roja</b><span>$4.500</span></p></div></li>
+      <li class="item"><span class="item__foto item__foto--color" style="--c:#24140d" aria-hidden="true"></span><div><p class="item__fila"><b>Pinta Negra</b><span>$4.500</span></p></div></li>
+    </ul>
+    <p class="nota" id="pintas-nota">Media pinta de Roja, APA o IPA (250 ml): $2.500.</p>
+  </section>
+
+  <!-- Banda: la mitad de la página. Video en el círculo y una promo real -->
+  <section class="banda" aria-labelledby="banda-titulo">
+    <div class="banda__in wrap">
+      <figure class="banda__video" data-reveal>
+        <video src="assets/jane-pouring-beer-fast.webm" poster="assets/jane-pouring-beer-fast-poster.jpg" width="854" height="480" muted loop playsinline autoplay preload="metadata" aria-label="Una cerveza tirándose de la canilla"></video>
+      </figure>
+      <div class="banda__texto" data-reveal>
+        <h2 id="banda-titulo" class="head">Dos pintas y papas, $13.000</h2>
+        <p>La promo de la casa. También van el 2 x 1 en gin Hilbing por $9.500 y dos hamburguesas americanas con una Heineken de litro por $32.000.</p>
+        <a class="link link-plain" href="#carta" data-pestana="promos">Ver todas las promos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Las noches: un disco por noche, la de hoy elegida -->
+  <section class="noches wrap" id="noches" aria-labelledby="noches-titulo">
+    <div class="noches__escenario" data-reveal>
+      <div class="noches__disco" aria-hidden="true"></div>
+      <div class="noches__foto">
+        <img class="is-on" data-noche="jueves" src="assets/kazantip-popovka-crimea-technics-turntable-vinyl-turntable.jpg" alt="Una bandeja de vinilo con el brazo sobre el disco" width="1920" height="1440" loading="lazy">
+        <img data-noche="viernes" src="assets/mirrored-disco-ball-with-light-and-motor.jpg" alt="Una bola de espejos girando bajo luces" width="1920" height="1280" loading="lazy">
+        <img data-noche="sabado" src="assets/mirrored-disco-ball-with-light-and-motor.jpg" alt="Una bola de espejos girando bajo luces" width="1920" height="1280" loading="lazy">
+        <img data-noche="domingo" src="assets/live-rock-concert-featuring-musicians-playing-electric.jpg" alt="Una banda de rock tocando en vivo con guitarras eléctricas" width="1920" height="1277" loading="lazy">
+      </div>
+      <p class="noches__dato" id="noches-dato">Electrónica de punta a punta, hasta el cierre.</p>
+    </div>
+    <div class="noches__lista">
+      <h2 id="noches-titulo" class="noches__titulo">Las noches</h2>
+      <ul role="tablist" aria-label="Noches de la semana">
+        <li><button role="tab" aria-selected="true" data-noche="jueves">Jueves techno</button></li>
+        <li><button role="tab" aria-selected="false" data-noche="viernes">Viernes cachengue</button></li>
+        <li><button role="tab" aria-selected="false" data-noche="sabado">Sábado cachengue</button></li>
+        <li><button role="tab" aria-selected="false" data-noche="domingo">Domingo rock nacional</button></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- La carta completa, de Fudo -->
+  <section class="carta wrap" id="carta" aria-labelledby="carta-titulo">
+    <div class="cabecera" data-reveal>
+      <h2 id="carta-titulo" class="head">La carta</h2>
+      <p class="cabecera__cuenta" id="carta-cuenta">230 productos</p>
+    </div>
+    <div class="carta__controles" data-reveal>
+      <div class="pestanas" role="tablist" aria-label="Secciones de la carta" id="pestanas"></div>
+      <label class="selector"><span class="sr-only">Sección de la carta</span><select id="selector"></select></label>
+      <label class="buscar">
+        <span class="sr-only">Buscar en la carta</span>
+        <input type="search" id="buscar" placeholder="Buscar: fernet, IPA, rabas…" autocomplete="off">
+      </label>
+    </div>
+    <div id="carta-cuerpo" class="carta__cuerpo" aria-live="polite">
+      <p>La carta completa está en <a class="link-plain" href="https://menu.fu.do/keineken/qr-menu">menu.fu.do/keineken</a>.</p>
+    </div>
+    <p class="nota" id="carta-fuente">Precios de la carta de Fudo. Pueden cambiar sin aviso; los confirma la barra.</p>
+  </section>
+
+  <!-- Marilyn: un solo marco redondo que cambia de foto -->
+  <section class="rubias wrap" aria-labelledby="rubias-titulo">
+    <div class="rubias__texto" data-reveal>
+      <h2 id="rubias-titulo" class="head">Las prefieren rubias</h2>
+      <p class="lead">Marilyn está en el logo y en la carta. El Combo Marilyn trae pollo crocante, tiritas de milanesa de ternera y rabas, con barbacoa, guacamole, cheddar y chimichurri, para compartir.</p>
+      <ul class="precios">
+        <li><span>Combo Marilyn</span><b>$30.000</b></li>
+        <li><span>Medio Combo Marilyn</span><b>$18.000</b></li>
+        <li><span>Heineken Rubia, 1 L</span><b>$10.000</b></li>
+      </ul>
+    </div>
+    <figure class="rubias__marco" data-reveal>
+      <button class="rubias__foto" type="button" aria-label="Ver la foto siguiente">
+        <img class="is-on" src="assets/marilyn-monroe-photoplay-1953-cropped.jpg" alt="Retrato de Marilyn Monroe con labios pintados" width="1920" height="2097" loading="lazy" data-pie="Marilyn Monroe para la revista Photoplay, 1953.">
+        <img src="assets/marilyn-monroe-in-how-to-marry-a.jpg" alt="Marilyn Monroe recostada con un vestido de noche" width="1920" height="2291" loading="lazy" data-pie="En Cómo casarse con un millonario, 1953.">
+        <img src="assets/marilyn-monroe-and-jane-russell-at-chinese.jpg" alt="Marilyn Monroe y Jane Russell dejando sus huellas en el cemento" width="1920" height="1573" loading="lazy" data-pie="Con Jane Russell en el Teatro Chino de Hollywood, 1953.">
+        <img src="assets/monroe-1953-publicity.jpg" alt="Retrato en blanco y negro de Marilyn Monroe con aros largos" width="1920" height="2355" loading="lazy" data-pie="Retrato de estudio, 1953.">
+      </button>
+      <figcaption id="rubias-pie">Marilyn Monroe para la revista Photoplay, 1953.</figcaption>
+    </figure>
+  </section>
+
+  <!-- Reservas: un cupón para recortar -->
+  <section class="reservas wrap" id="reservas" aria-labelledby="reservas-titulo">
+    <form class="cupon" id="cupon" data-reveal action="https://wa.me/542604550271" method="get" target="_blank">
+      <div class="cupon__izq">
+        <h2 id="reservas-titulo">Reservá tu mesa</h2>
+        <p>Elegí la noche y cuántos son. Se abre WhatsApp con el mensaje armado y te confirmamos por ahí.</p>
+      </div>
+      <div class="cupon__der">
+        <label><span class="sr-only">Tu nombre</span><input class="campo" name="nombre" id="r-nombre" placeholder="Tu nombre" autocomplete="given-name" required></label>
+        <label><span class="sr-only">Noche</span><select class="campo" name="noche" id="r-noche"><option>Esta noche</option></select></label>
+        <label><span class="sr-only">Cuántos son</span><select class="campo" name="personas" id="r-personas"></select></label>
+        <label><span class="sr-only">Hora de llegada</span><select class="campo" name="hora" id="r-hora"></select></label>
+        <input type="hidden" name="text" id="r-texto">
+        <button class="cupon__enviar" type="submit">Mandar por WhatsApp</button>
+      </div>
+    </form>
+
+    <div class="donde" data-reveal>
+      <h3 class="donde__titulo">Hipólito Yrigoyen 1650, San Rafael</h3>
+      <dl class="donde__datos">
+        <div><dt>Horario</dt><dd>De 19 a 5 <span id="donde-estado"></span></dd></div>
+        <div><dt>Teléfono</dt><dd><a class="link-plain" href="tel:+542604279817">260 427-9817</a></dd></div>
+        <div><dt>WhatsApp</dt><dd><a class="link-plain" href="https://wa.me/542604550271">2604 55-0271</a></dd></div>
+        <div><dt>Instagram</dt><dd><a class="link-plain" href="https://www.instagram.com/lacerveceria.sanrafael/">@lacerveceria.sanrafael</a></dd></div>
+        <div><dt>Mail</dt><dd><a class="link-plain" href="mailto:bierhaus24@gmail.com">bierhaus24@gmail.com</a></dd></div>
+      </dl>
+      <a class="pastilla pastilla--clara" href="https://www.google.com/maps/search/?api=1&query=Hip%C3%B3lito+Yrigoyen+1650%2C+San+Rafael%2C+Mendoza">Cómo llegar</a>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="wrap">
+    <p class="pie__marca" aria-label="La Cervecería">
+      <span class="pie__logo"><img src="assets/logo-marilyn.png" alt="" width="150" height="150"></span><span>C</span><span>E</span><span>R</span><span>V</span><span>E</span><span>C</span><span>E</span><span>R</span><span>Í</span><span>A</span>
+    </p>
+    <div class="pie__grilla">
+      <nav class="pie__links" aria-label="Pie">
+        <a class="link" href="#noches">Las noches</a>
+        <a class="link" href="#pintas">Pintas</a>
+        <a class="link" href="#carta">La carta</a>
+        <a class="link" href="#reservas">Reservas</a>
+        <a class="link" href="https://menu.fu.do/keineken/qr-menu">Pedir por Fudo</a>
+        <a class="link" href="https://www.instagram.com/lacerveceria.sanrafael/">Instagram</a>
+      </nav>
+      <address class="pie__contacto">
+        Hipólito Yrigoyen 1650, San Rafael, Mendoza<br>
+        De 19 a 5 · WhatsApp <a class="link-plain" href="https://wa.me/542604550271">2604 55-0271</a>
+      </address>
+    </div>
+    <p class="pie__creditos" id="creditos">Fotos de archivo: Marilyn Monroe, Photoplay 1953, Cómo casarse con un millonario 1953 y retrato de 1953 (dominio público, Wikimedia Commons); «Marilyn Monroe and Jane Russell at Chinese Theater 2», Los Angeles Times, CC BY 4.0; «Kazantip, Popovka, Crimea, Technics turntable», CC BY 4.0; «Mirrored Disco Ball with Light and Motor», CC0; «Live rock concert…», CC BY 2.0; «Jane pouring beer fast», Angulidayaaluta, CC BY-SA 4.0. Todas vía Wikimedia Commons y Openverse. Productos: ilustraciones propias.</p>
+    <div class="pie__ultima">
+      <p>© 2026 La Cervecería, San Rafael. Beber con moderación. Prohibida la venta a menores de 18 años.</p>
+      <a class="pastilla" href="#inicio">Arriba</a>
+    </div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="ilustraciones.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
